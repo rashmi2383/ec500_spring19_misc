@@ -1,0 +1,5 @@
+# IDE stuff
+*/.idea/*
+
+# Python virtual enviornment
+*/venv/*
