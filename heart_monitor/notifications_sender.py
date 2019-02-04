@@ -23,7 +23,7 @@ class SMSSender(NotificationSender):
     :raises keyError: raises an exception
     '''
 	def find_number(Contact):
-		return Contact.get_sms()
+	   return Contact.get_sms()
     pass
 
 
