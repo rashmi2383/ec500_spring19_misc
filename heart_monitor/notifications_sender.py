@@ -23,8 +23,7 @@ class SMSSender(NotificationSender):
     :raises keyError: raises an exception
     '''
 	def find_number(Contact):
-		number = Contact.get_sms()
-		return number
+		return Contact.get_sms()
     pass
 
 
@@ -35,8 +34,7 @@ class EmailSender(NotificationSender):
     :raises keyError: raises an exception
     '''
 	def find_email(Contact):
-		email = Contact.get_email()
-		return email
+		return Contact.get_email()
     pass
 
 
@@ -47,8 +45,7 @@ class TelegramSender(NotificationSender):
     :raises keyError: raises an exception
     '''
 	def find_number(Contact):
-		number = Contact.get_telegraph()
-		return number
+		return Contact.get_telegraph()
     pass
 
 
