@@ -41,7 +41,7 @@ class EmailSender(NotificationSender):
 
 
 class TelegramSender(NotificationSender):
-	'''
+	''' 
     :param message: object_instance of Contact class;
     returns: string with telegraph destination number
     :raises keyError: raises an exception
