@@ -2,16 +2,22 @@ from enum import Enum
 
 
 '''
-The idea is that urgency can help the notification manager decided what
+The idea is that urgency can help the notification manager decide what
 messaging medium is the most appropriate or if a message calls for multiple
 mediums to be used
 '''
 
 
-class Urgency(Enum):
+class MessageUrgency(Enum):
     LOW_URGENCY = 0
     MEDIUM_URGENCY = 1
     HIGH_URGENCY = 2
+
+
+class SensorDataType(Enum):
+    BLOOD_OXYGEN = 0
+    BLOOD_PULSE = 1
+    BLOOD_PRESSURE = 2
 
 
 class Message(object):
@@ -26,24 +32,36 @@ class Message(object):
         return self._urgency
 
 
-class BloodPulseData(object):
-    def __init__(self, pulse):
+class RawData(object):
+    def __init__(self, timestamp, data_type):
+        self._timestamp = timestamp
+        self._data_type = data_type
+
+    def get_type(self):
+        return self._data_type
+
+
+class BloodPulseData(RawData):
+    def __init__(self, pulse, timestamp):
+        super().__init__(timestamp, SensorDataType.BLOOD_PULSE)
         self._pulse = pulse
 
     def get_pulse(self):
         return self._pulse
 
 
-class BloodOxygenData(object):
-    def __init__(self, oxy_level):
+class BloodOxygenData(RawData):
+    def __init__(self, oxy_level, timestamp):
+        super().__init__(timestamp, SensorDataType.BLOOD_OXYGEN)
         self._oxy_level = oxy_level
 
-    def get_oxy_data(self):
+    def get_oxy(self):
         return self._oxy_level
 
 
-class BloodPressureData(object):
-    def __init__(self, systolic, diastolic):
+class BloodPressureData(RawData):
+    def __init__(self, systolic, diastolic, timestamp):
+        super().__init__(timestamp, SensorDataType.BLOOD_PRESSURE)
         self._systolic = systolic
         self._diastolic = diastolic
 
@@ -54,11 +72,25 @@ class BloodPressureData(object):
         return self._diastolic
 
 
+class QueueSensorData(object):
+
+    def __init__(self, sensor_data, data_type):
+        self._sensor_data = sensor_data
+        self._data_type = data_type
+
+    def get_sensor_data(self):
+        return self._sensor_data
+
+    def get_sensor_type(self):
+        return self._sensor_data
+
+
 class Contact(object):
-    def __init__(self, name, sms_info, telegram_info):
+    def __init__(self, name, sms_info, telegram_info, email_info):
         self._name = name
         self._sms_info = sms_info
         self._telegram_info = telegram_info
+        self._email_info = email_info
 
     def get_name(self):
         return self._name
@@ -68,3 +100,6 @@ class Contact(object):
 
     def get_sms(self):
         return self._sms_info
+
+    def get_email_info(self):
+        return self._email_info

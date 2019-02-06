@@ -23,12 +23,15 @@ class DisplayHandler(object):
     returns: void function ( displays pulselevel )
     :raises keyError: raises an exception
     '''
-    def display_blood_oxygen(oxy):
-    def display_blood_pressure(systolic,diatolic):
-    def display_blood_pulse(pulse):
 
+    def display_blood_oxygen(self, oxy):
+        pass
 
-    pass
+    def display_blood_pressure(self, systolic, diastolic):
+        pass
+
+    def display_blood_pulse(self, pulse):
+        pass
 
 
 class TextTerminalDisplay(DisplayHandler):
@@ -36,3 +39,36 @@ class TextTerminalDisplay(DisplayHandler):
     :developer: N/A
     A simple derived class which will print data to the terminal (stdout)
     '''
+
+    def __init__(self):
+        self._cur_oxygen = 0
+        self._cur_systolic = 0
+        self._cur_diastolic = 0
+        self._cur_pulse = 0
+
+    def display_blood_oxygen(self, oxy):
+        self._cur_oxygen = oxy
+        self.display_data()
+
+    def display_blood_pressure(self, systolic, diastolic):
+        self._cur_diastolic = diastolic
+        self._cur_systolic = systolic
+        self.display_data()
+
+    def display_blood_pulse(self, pulse):
+        self._cur_pulse = pulse
+        self.display_data()
+
+    def display_data(self):
+        print(
+            (
+                '< {} bps HEART RATE > | '
+                '< {}/{} SYS/DIA mmHg kPa > | '
+                '< {}% Oxygen Saturation >'
+            ).format(
+                self._cur_pulse,
+                self._cur_systolic,
+                self._cur_diastolic,
+                self._cur_oxygen
+            )
+        )

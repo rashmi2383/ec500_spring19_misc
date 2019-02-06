@@ -1,4 +1,3 @@
-from common_types import Contact, Message
 
 
 class NotificationSender(object):
@@ -11,40 +10,58 @@ class NotificationSender(object):
     returns: void function (sends message)
     :raises keyError: raises an exception
     '''
-    def send_notification(Message, recipient):
-    pass
+
+    def send_notification(self, message, recipient):
+        pass
 
 
 # We can define the individual notification senders in more detail later if needed
-class SMSSender(NotificationSender):
-	'''
+class MockSMSSender(NotificationSender):
+    '''
     :param message: object_instance of Contact class
     returns: string with sms destination number
     :raises keyError: raises an exception
     '''
-    def find_number(Contact):
-    	return Contact.get_sms()
+
+    def get_cell_number(self):
+        pass
+
+    def send_notification(self, message, recipient):
+        print(
+            'sms> TO: {}\n\t\t{}'.format(
+                recipient.get_name(), message.get_msg_content())
+        )
 
 
-class EmailSender(NotificationSender):
-	'''
+class MockEmailSender(NotificationSender):
+    '''
     :param message: object_instance of Contact class
     returns: string with email destination
     :raises keyError: raises an exception
     '''
-    def find_email(Contact):
-    	return Contact.get_email()
-    
+
+    def get_email(self):
+        pass
+
+    def send_notification(self, message, recipient):
+        print(
+            'email> TO: {}\n\t\t{}'.format(
+                recipient.get_name(), message.get_msg_content())
+        )
 
 
-class TelegramSender(NotificationSender):
-	''' 
+class MockTelegramSender(NotificationSender):
+    '''
     :param message: object_instance of Contact class;
     returns: string with telegraph destination number
     :raises keyError: raises an exception
     '''
-    def find_number(Contact):
-    	return Contact.get_telegraph()
-    
 
+    def get_telegram_id(self):
+        pass
 
+    def send_notification(self, message, recipient):
+        print(
+            'telegram>> BOT > TO: {}\n\t\t{}'.format(
+                recipient.get_name(), message.get_msg_content())
+        )

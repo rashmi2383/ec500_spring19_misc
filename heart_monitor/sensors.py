@@ -1,5 +1,8 @@
+import time
+import sensor
+import datetime
 from threading import Thread
-from multiprocessing import Queue
+from common_types import BloodOxygenData, BloodPressureData, BloodPulseData
 
 
 class SensorReader(Thread):
@@ -25,18 +28,12 @@ class SensorReader(Thread):
     :returns: void function (add new instance to data table)
     :raises keyError: raises an exception
     '''
-    def read_sensor(data_source):
-        return data_source.get()
 
-    def update_display_component(display_handler):
-        display_handler.display()
-
-    def send_to_data_processor(out_queue, check_interval):
-        out_queue.put(timeout=check_interval)
-        return out_queue
-
-    def update_database(Table):
-        Table.add()
+    def __init__(self, sample_frequency, proc_queue, display_handler):
+        super().__init__()
+        self._sample_freq = sample_frequency
+        self._data_proc_queue = proc_queue
+        self._display = display_handler
 
 
 class BloodOxygenSensorReader(SensorReader):
@@ -45,7 +42,21 @@ class BloodOxygenSensorReader(SensorReader):
     This class decodes read data from a hardware sensor and forwards it the
     realtime data processor for vitals analysis. Additionally
     '''
-    pass
+
+    def run(self):
+        cur_time = old_time = time.time()
+        while True:
+            if (cur_time - old_time) >= self._sample_freq:
+                old_time = cur_time
+                oxy_raw = sensor.BloodOxygenSensor.get_blood_oxygen_data()
+                oxy_data = BloodOxygenData(
+                    oxy_raw,
+                    datetime.datetime.now()
+                )
+                self._data_proc_queue.put(oxy_data, block=False)
+                # we would decode and encode here
+                self._display.display_blood_oxygen(oxy_raw)
+            cur_time = time.time()
 
 
 class BloodPressureSensorReader(SensorReader):
@@ -54,13 +65,38 @@ class BloodPressureSensorReader(SensorReader):
     This class decodes read data from a hardware sensor and forwards it the
     realtime data processor for vitals analysis. Additionally
     '''
-    pass
+    def run(self):
+        cur_time = old_time = time.time()
+        while True:
+            if (cur_time - old_time) >= self._sample_freq:
+                old_time = cur_time
+                raw_data = sensor.BloodPressureSensor.get_blood_pressure_data()
+                pressure_data = BloodPressureData(
+                    raw_data[0],
+                    raw_data[1],
+                    datetime.datetime.now()
+                )
+                self._data_proc_queue.put(pressure_data, block=False)
+                self._display.display_blood_pressure(raw_data[0], raw_data[1])
+            cur_time = time.time()
 
 
-class BloodPulseReader(SensorReader):
+class BloodPulseSensorReader(SensorReader):
     '''
     :developer: N/A
     This class decodes read data from a hardware sensor and forwards it the
     realtime data processor for vitals analysis. Additionally
     '''
-    pass
+    def run(self):
+        cur_time = old_time = time.time()
+        while True:
+            if (cur_time - old_time) >= self._sample_freq:
+                old_time = cur_time
+                pulse_data_raw = sensor.BloodPulseSensor.get_blood_pulse_data()
+                pulse_data = BloodPulseData(
+                    pulse_data_raw,
+                    datetime.datetime.now()
+                )
+                self._data_proc_queue.put(pulse_data, block=False)
+                self._display.display_blood_pulse(pulse_data_raw)
+            cur_time = time.time()
