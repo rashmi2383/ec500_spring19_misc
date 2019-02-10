@@ -29,4 +29,3 @@ class TextToDatabase:
             )
 	)
         datetime_wise_data[timestamp] = data
-        print("Data: %s" % datetime_wise_data)
